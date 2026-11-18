@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>CSC584 Workbook</title>
+<style>
+:root{--bg:#eef2f1;--card:#fff;--ink:#112226;--mute:#587076;--acc:#0b6e6e;--ok:#16794f;--bad:#b4431a;--line:#cfdad9;--code:#f3f6f6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1a1c;--card:#142a2d;--ink:#e6f1f0;--mute:#93b0b3;--acc:#5fc4c0;--ok:#4cc58d;--bad:#ff9468;--line:#27474b;--code:#0f2124}}
+:root[data-theme="dark"]{--bg:#0d1a1c;--card:#142a2d;--ink:#e6f1f0;--mute:#93b0b3;--acc:#5fc4c0;--ok:#4cc58d;--bad:#ff9468;--line:#27474b;--code:#0f2124}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 72px}
+h1,h2,h3{font-family:Georgia,"Iowan Old Style",serif;line-height:1.25;margin:.4em 0}
+a{color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.grid a{text-decoration:none;color:inherit}.grid .card{margin:0;height:100%}.grid a:hover .card{border-color:var(--acc)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:8px 14px}
+button:hover{border-color:var(--acc)}button.p{background:var(--acc);color:#fff;border-color:var(--acc)}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.opt{display:block;width:100%;text-align:left;margin:7px 0}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 16%,transparent)}
+.opt.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 16%,transparent)}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow-x:auto;font:13.5px/1.5 ui-monospace,Menlo,Consolas,monospace;margin:8px 0}
+pre input{font:inherit;width:11ch;border:0;border-bottom:2px solid var(--acc);background:transparent;color:var(--ink);padding:0 2px}
+pre input.ok{border-color:var(--ok);color:var(--ok)}pre input.bad{border-color:var(--bad);color:var(--bad)}
+textarea{width:100%;min-height:150px;font:13.5px/1.5 ui-monospace,Menlo,Consolas,monospace;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--code);color:var(--ink)}
+.mute{color:var(--mute)}.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}.bar i{display:block;height:100%;background:var(--acc)}
+.why{border-left:4px solid var(--acc);padding:2px 12px;margin-top:10px}.why.bad{border-color:var(--bad)}.why.ok{border-color:var(--ok)}
+.hide{display:none}label.ck{display:block;margin:4px 0}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+/* Question format: [question, [options], correctIndex, explanation, optionalCode] */
+const CH=[
+{id:'c1',t:'Chapter 1: OOP review',s:'Access levels, abstract classes, interfaces',q:[
+['A field has no access modifier. Who can access it?',['Any class in the world','Only the class itself','Any class in the same package','The same package and all subclasses, anywhere'],2,'No modifier means the default (package) level: visible inside the same package only. “Subclasses anywhere” describes protected, and “any class” describes public.'],
+['Which classes can access a protected member?',['Only the declaring class','Classes in the same package, plus subclasses in other packages','Only subclasses, never the same package','Every class'],1,'Protected = package + subclasses. Option 3 is wrong because same-package classes also get access; option 4 is public; option 1 is private.'],
+['Which two modifiers cannot be applied to a class or interface?',['public and default','protected and private','public and protected','default and private'],1,'A class or interface can only be public or default. Protected and private are for members (fields, methods, constructors).'],
+['Logger has a private field format with public getFormat() and setFormat(). This is called:',['Inheritance','Encapsulation','Polymorphism','Overloading'],1,'Hiding data with private and exposing it through public methods is encapsulation. Inheritance is extending a class; polymorphism is one variable holding many object types.'],
+['A superclass method is protected. Which version in a subclass is NOT allowed?',['protected','public','private','Both protected and public are fine'],2,'An overriding method cannot be more restrictive. Protected can stay protected or widen to public, but private is narrower, so it is rejected.'],
+['What happens to a private superclass method in a subclass?',['It is inherited and usable','It is inherited but read-only','It is not inherited at all','It becomes protected'],2,'Private methods are not inherited, so no overriding rule applies to them.'],
+['Why must main() be public?',['So it can be inherited','So the Java interpreter can call it to run the class','Because every static method is public','So other classes can override it'],1,'If main() were not public, the interpreter (java) could not call it to start the program.'],
+['What is the result?',['It runs and greeting() does nothing','Compile error: an abstract class cannot be instantiated','Runtime error when greeting() is called','Works if Card has a constructor'],1,'You can never create an object from an abstract class. Instantiate a concrete subclass such as Holiday instead. Having a constructor doesn’t change this.','abstract class Card { abstract void greeting(); }\nCard c = new Card();'],
+['Which is a valid abstract method?',['public abstract void greeting() { }','public abstract void greeting();','private abstract void greeting();','public static abstract void greeting();'],1,'An abstract method has no body and ends with a semicolon. Option 1 has a body; private and static methods cannot be abstract.'],
+['Circle extends abstract Shape but implements only getArea(), not getPerimeter(). What must Circle be?',['Concrete, it still compiles','Declared abstract too, so it cannot be instantiated','Turned into an interface','Declared private'],1,'A subclass is concrete only if it overrides all inherited abstract methods. Otherwise it stays abstract (an unfinished building nobody can live in).'],
+['An abstract class can’t be instantiated. What about its constructor?',['It never runs','A subclass must still invoke it with super()','It must be private','Abstract classes cannot have constructors'],1,'The constructor still initialises the abstract class’s own data members, and runs through super() when a concrete subclass object is created.'],
+['In an interface, what are “double PI = 3.14;” and “double methodB();” implicitly?',['Private','Protected','Public (and the field is static final)','Package-private'],2,'Interface fields are implicitly public static final and its methods are public by default. A method in an interface cannot be private.'],
+['How does Java give “multiple inheritance” of behaviour?',['Extend two classes','Implement several interfaces','Use two abstract classes','Declare the class protected'],1,'A class extends exactly one parent but may implement many interfaces.'],
+['Which declaration is correct for Book (parent Goods, interface Taxable)?',['class Book implements Goods extends Taxable','class Book extends Goods implements Taxable','class Book extends Goods, Taxable','class Book implements Goods, Taxable'],1,'Goods is a class, so extends; Taxable is an interface, so implements; extends comes first. A class can’t extend two classes.'],
+['Card card = new Holiday("Amy"); card = new Birthday("Cindy",17); card.greeting(); Which greeting runs?',['Holiday’s','Birthday’s','Card’s','Compile error'],1,'Polymorphism: the method that runs depends on the object the variable currently holds, here a Birthday. A Card variable can hold any subclass object.'],
+['Toy.display() calls super.display() first. Why?',['To run Goods’ display(), then add Toy’s extra line','To make display() abstract','To create a new Goods object','To call the interface'],0,'super.display() reuses the parent’s code (description and price) before the subclass adds its own output, which is what inheritance is for.'],
+['Why is Taxable an interface instead of part of Goods?',['Interfaces run faster','Food isn’t taxable, and “taxable” is behaviour shared by unrelated kinds of goods','Goods cannot have methods','Classes cannot hold constants'],1,'Not all Goods are taxable (Food is not), so it can’t live in Goods. An interface adds the behaviour only to Toy and Book. Inheritance shares code; interfaces share behaviour.']
+]},
+{id:'c3',t:'Chapter 3: Java EE to Jakarta EE',s:'javax to jakarta, Tomcat 10',q:[
+['After the move to Jakarta EE, the API package prefix changed:',['jakarta.* to javax.*','javax.* to jakarta.*','java.* to jakarta.*','javax.* to jee.*'],1,'When Java EE moved to the Eclipse Foundation, javax.* became jakarta.*. Option 1 is the reverse.'],
+['Which Tomcat versions implement Jakarta EE?',['Tomcat 9 and earlier','Tomcat 10 and later','Only Tomcat 8','All versions'],1,'Tomcat 10+ implements Jakarta EE (jakarta.*). Tomcat 9 and earlier implement Java EE (javax.*).'],
+['An app built for Tomcat 9 is dropped into Tomcat 10 unchanged. Expected result?',['Runs normally','Won’t run without changes, because it imports javax.*','Runs but slower','Tomcat 10 silently rewrites it'],1,'Code changes are almost certainly needed. Automatic conversion only happens with the migration tool or the webapps-javaee folder, not for a normal deploy.'],
+['Which import is correct on Tomcat 10?',['import javax.servlet.http.HttpServlet;','import jakarta.servlet.http.HttpServlet;','import java.servlet.http.HttpServlet;','import jakarta.http.servlet.HttpServlet;'],1,'Only the root changes (javax to jakarta); the rest of the path stays servlet.http.HttpServlet. Option 4 scrambles the path.'],
+['What does putting an old app in $CATALINA_BASE/webapps-javaee do?',['Nothing','Tomcat converts it to Jakarta EE and copies it to webapps','It deletes the app','It forces javax to load'],1,'Tomcat uses its migration tool for Jakarta EE to convert the app automatically and copy it into webapps.'],
+['What do the javax.servlet / jakarta.servlet packages define?',['Database drivers','The contracts between a servlet class and the servlet container','HTML styling','Only JSP tag libraries'],1,'They hold the classes and interfaces describing how a servlet and its container talk to each other.']
+]},
+{id:'c4',t:'Chapter 4: Servlet + JSP (MVC)',s:'Handbag example: form, controller, view',q:[
+['In the Handbag example, which file is the Controller?',['addHandbag.html','HandbagController.java','viewHandbag.jsp','web.xml'],1,'The servlet receives the form data, stores it and forwards. The HTML form and the JSP are the View.'],
+['Which MVC part is missing from the example?',['View','Controller','Model (e.g. a Handbag JavaBean)','None, all three exist'],2,'The notes say the Model isn’t present but could be added later as a Handbag JavaBean.'],
+['The form has method="post". Which servlet method handles it?',['doGet','doPost','init','destroy'],1,'POST requests go to doPost(). doGet() handles GET.'],
+['What does request.getParameter("price") return?',['double','int','String','Object'],2,'getParameter always returns a String (or null), which is why the example stores price as a String.'],
+['What does request.setAttribute("name", name) do?',['Reads form data','Stores data in the request so the JSP can read it','Writes to a database','Redirects the browser'],1,'It puts the value in request scope. Reading form data is getParameter().'],
+['Which code forwards to the JSP?',['response.sendRedirect("/example/viewHandbag.jsp")','request.getRequestDispatcher("/example/viewHandbag.jsp").forward(request, response)','request.forward("/example/viewHandbag.jsp")','response.getParameter("viewHandbag.jsp")'],1,'The notes use a RequestDispatcher to forward, which keeps the request attributes. sendRedirect makes a new request and loses them; the other two methods don’t exist.'],
+['The servlet used setAttribute. Which JSP expression reads it the way the notes show?',['<%= request.setAttribute("brand") %>','<%= request.getAttribute("brand") %>','<c:out value="brand" />','<%= brand.get() %>'],1,'Data stored with setAttribute is read with getAttribute. Option 3 would print the literal word brand; it needs ${brand}.'],
+['What does <c:out value="${name}" /> do?',['Sets an attribute called name','Prints the attribute name, escaping special characters','Prints the literal text ${name}','Reads a form parameter only'],1,'It outputs the request attribute and escapes it, which helps avoid XSS.'],
+['What does <%@ taglib uri="..." prefix="c" %> do?',['Imports a Java class','Enables JSTL and sets c: as the tag prefix','Sets the page encoding','Declares a servlet'],1,'It loads the JSTL core library so tags like <c:out> work. Encoding is the page directive.'],
+['Why is JSTL preferred over <%= ... %>?',['It compiles faster','It displays values safely (avoiding XSS) with cleaner syntax','Servlets require it','JSP cannot use scriptlets'],1,'The notes call scriptlets the older style. Scriptlets still work, so option 4 is wrong.'],
+['addHandbag.html is in example/. Why is the form action ../HandbagController?',['Servlets must live in a parent folder','../ goes up one level from example/ to where the servlet is mapped','It is required syntax for POST','../ encrypts the data'],1,'Relative URLs start from the page’s own folder. Going up one level from /example/ reaches the app root, where the servlet is mapped.'],
+['What is the correct order of steps?',['JSP, servlet, form','Form, servlet processes the request, forward to JSP','Servlet, form, JSP','Form, JSP, servlet'],1,'The user submits the form, the controller processes it, then forwards to the view that displays the result.'],
+['What does contentType="text/html; charset=UTF-8" ensure?',['Faster rendering','Special characters like é, ü, ñ display correctly','The JSP becomes a servlet','The data is secured'],1,'UTF-8 encoding makes special characters display correctly.']
+]}
+];
+
+/* Code practice: fill = auto-checked blanks. write = write on paper/here, then self-check. */
+const CODE=[
+{k:'fill',t:'Fill the blanks: Book class',code:'class Book [[0]] Goods [[1]] Taxable {\n  String [[2]];\n  Book(String des, double pr, String auth) {\n    super(des, pr);\n    [[3]] = auth;\n  }\n  void display() {\n    super.display();\n    System.out.println("author: " + [[4]]);\n  }\n  public double [[5]]() {\n    return price * [[6]];\n  }\n}',ans:['extends','implements','author','author|this.author','author|this.author','calculateTax','taxRate'],note:'Goods is a class (extends), Taxable an interface (implements). The method name must match the interface’s calculateTax(), and taxRate is the interface constant.'},
+{k:'fill',t:'Fill the blanks: servlet doPost',code:'protected void doPost(HttpServletRequest request, HttpServletResponse response)\n    throws ServletException, IOException {\n  String name = request.[[0]]("name");\n  request.[[1]]("name", name);\n  RequestDispatcher d = request.[[2]]("/example/viewHandbag.jsp");\n  d.[[3]](request, response);\n}',ans:['getParameter','setAttribute','getRequestDispatcher','forward'],note:'Read the form with getParameter, store it with setAttribute, get a dispatcher for the JSP, then forward the request.'},
+{k:'fill',t:'Fill the blank: Tomcat 10 import',code:'import [[0]].servlet.http.HttpServlet;',ans:['jakarta'],note:'Tomcat 10 and later use jakarta.*; Tomcat 9 and earlier use javax.*.'},
+{k:'write',t:'Write it: Card, Birthday, Holiday + main',prompt:'Write abstract class Card (recipient, abstract greeting()), subclasses Birthday and Holiday, and a main that uses one Card variable for both.',model:'abstract class Card {\n  String recipient;\n  public abstract void greeting();\n}\nclass Holiday extends Card {\n  Holiday(String r) { recipient = r; }\n  public void greeting() {\n    System.out.println("Dear " + recipient + ",");\n    System.out.println("Season’s Greetings!");\n  }\n}\n// Birthday is the same idea with its own message\npublic static void main(String[] args) {\n  Card card = new Holiday("Amy");\n  card.greeting();\n  card = new Birthday("Cindy");\n  card.greeting();\n}',check:['Card is declared abstract','greeting() is abstract: no body, ends with ;','Subclasses use extends Card','Each subclass implements greeting() with its own message','main uses a Card variable and reassigns it (polymorphism)']},
+{k:'write',t:'Write it: HandbagController doPost',prompt:'Write doPost that reads name and brand, stores them as request attributes and forwards to /example/viewHandbag.jsp.',model:'protected void doPost(HttpServletRequest request, HttpServletResponse response)\n    throws ServletException, IOException {\n  String name = request.getParameter("name");\n  String brand = request.getParameter("brand");\n  request.setAttribute("name", name);\n  request.setAttribute("brand", brand);\n  RequestDispatcher d = request.getRequestDispatcher("/example/viewHandbag.jsp");\n  d.forward(request, response);\n}',check:['Signature is doPost(HttpServletRequest, HttpServletResponse) with throws','getParameter for each form field','setAttribute for each value','getRequestDispatcher then forward(request, response)','Imports use jakarta.servlet on Tomcat 10']}
+];
+
+const $=document.getElementById('app');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let S={};try{S=JSON.parse(localStorage.getItem('csc584')||'{}')}catch(e){}
+S.best=S.best||{};S.wrong=S.wrong||{};S.notes=S.notes||{};
+const sv=()=>{try{localStorage.setItem('csc584',JSON.stringify(S))}catch(e){}};
+const all=()=>CH.flatMap(c=>c.q.map((x,i)=>({id:c.id+'-'+i,q:x[0],o:x[1],a:x[2],w:x[3],c:x[4]})));
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+
+function home(){
+  const nw=Object.keys(S.wrong).length;
+  $.innerHTML=`<h1>CSC584 Enterprise Programming</h1>
+  <p class="mute">MCQ practice from your notes. Wrong answers get a reason. Progress saves on this device.</p>
+  <div class="grid">${CH.map(c=>`<a href="#quiz/${c.id}"><div class="card"><h3>${esc(c.t)}</h3><p class="mute">${esc(c.s)}</p><p>${c.q.length} questions · ${S.best[c.id]!=null?'best '+S.best[c.id]+'%':'not tried'}</p></div></a>`).join('')}
+  <a href="#quiz/mix"><div class="card"><h3>Mix of all chapters</h3><p class="mute">Shuffled exam-style round</p><p>${all().length} questions · ${S.best.mix!=null?'best '+S.best.mix+'%':'not tried'}</p></div></a>
+  <a href="#quiz/wrong"><div class="card"><h3>Retry my mistakes</h3><p class="mute">Only questions you got wrong</p><p>${nw} waiting</p></div></a>
+  <a href="#code"><div class="card"><h3>Coding practice</h3><p class="mute">Fill the blanks (auto-checked) and write-it-yourself with a checklist</p></div></a></div>`;
+}
+
+function quiz(key){
+  let pool=key==='mix'?all():key==='wrong'?all().filter(x=>S.wrong[x.id]):all().filter(x=>x.id.startsWith(key+'-'));
+  if(!pool.length){$.innerHTML='<p><a href="#">Back</a></p><div class="card">Nothing to practise here yet. Do a chapter quiz first.</div>';return}
+  pool=shuf(pool);let i=0,right=0,missed=[];
+  const next=()=>{
+    if(i>=pool.length){
+      const pct=Math.round(100*right/pool.length);
+      if(key!=='wrong'){S.best[key]=Math.max(S.best[key]||0,pct)}sv();
+      $.innerHTML=`<p><a href="#">Back to chapters</a></p><div class="card"><h2>Score: ${right} / ${pool.length} (${pct}%)</h2>
+      ${missed.length?'<h3>Review these</h3>'+missed.map(m=>`<div class="why bad"><b>${esc(m.q)}</b><br>Answer: ${esc(m.o[m.a])}<br><span class="mute">${esc(m.w)}</span></div>`).join(''):'<p>No mistakes. Nice.</p>'}
+      <p><button class="p" id="again">Try again</button> ${missed.length?'<button id="rw">Retry mistakes only</button>':''}</p></div>`;
+      document.getElementById('again').onclick=()=>quiz(key);
+      const rw=document.getElementById('rw');if(rw)rw.onclick=()=>{location.hash='#quiz/wrong';route()};
+      return}
+    const q=pool[i],opts=shuf(q.o.map((t,k)=>({t,ok:k===q.a})));
+    $.innerHTML=`<p><a href="#">Quit</a></p><div class="card"><div class="bar"><i style="width:${100*i/pool.length}%"></i></div>
+    <p class="mute">Question ${i+1} of ${pool.length}</p><b>${esc(q.q)}</b>${q.c?`<pre>${esc(q.c)}</pre>`:''}
+    ${opts.map((o,k)=>`<button class="opt" data-k="${k}">${esc(o.t)}</button>`).join('')}<div id="fb"></div></div>`;
+    $.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+      const o=opts[+b.dataset.k];
+      $.querySelectorAll('.opt').forEach((x,k)=>{x.disabled=true;if(opts[k].ok)x.classList.add('ok')});
+      if(o.ok){right++;delete S.wrong[q.id]}else{b.classList.add('bad');S.wrong[q.id]=1;missed.push(q)}
+      sv();
+      document.getElementById('fb').innerHTML=`<div class="why ${o.ok?'ok':'bad'}"><b>${o.ok?'Correct.':'Not quite.'}</b> ${o.ok?'':'The answer is “'+esc(q.o[q.a])+'”. '}${esc(q.w)}</div><p><button class="p" id="nx">${i+1<pool.length?'Next':'See score'}</button></p>`;
+      document.getElementById('nx').onclick=()=>{i++;next()};
+    });
+  };
+  next();
+}
+
+function code(){
+  $.innerHTML=`<p><a href="#">Back</a></p><h1>Coding practice</h1>
+  <p class="mute">The exam codes on paper, so these train recall. Blanks are checked for you; written answers are self-checked against a model and a checklist.</p>
+  ${CODE.map((e,n)=>e.k==='fill'?`<div class="card" data-n="${n}"><h3>${esc(e.t)}</h3><pre>${esc(e.code).replace(/\[\[(\d+)\]\]/g,'<input data-i="$1" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="blank $1">')}</pre><button class="p chk">Check</button> <span class="res mute"></span><div class="why hide">${esc(e.note)}</div></div>`
+  :`<div class="card" data-n="${n}"><h3>${esc(e.t)}</h3><p>${esc(e.prompt)}</p><textarea spellcheck="false" aria-label="your answer"></textarea><p><button class="rev">Show model answer</button></p><div class="m hide"><pre>${esc(e.model)}</pre>${e.check.map((c,k)=>`<label class="ck"><input type="checkbox" data-k="${k}"> ${esc(c)}</label>`).join('')}<p class="res mute"></p></div></div>`).join('')}`;
+  $.querySelectorAll('.card[data-n]').forEach(card=>{
+    const e=CODE[+card.dataset.n];
+    if(e.k==='fill'){
+      card.querySelector('.chk').onclick=()=>{
+        let ok=0;
+        card.querySelectorAll('input[data-i]').forEach(inp=>{
+          const good=e.ans[+inp.dataset.i].split('|'),v=inp.value.trim();
+          const hit=good.includes(v);inp.classList.toggle('ok',hit);inp.classList.toggle('bad',!hit);if(hit)ok++;
+        });
+        card.querySelector('.res').textContent=ok+' / '+e.ans.length+' correct';
+        card.querySelector('.why').classList.remove('hide');
+      };
+    }else{
+      const ta=card.querySelector('textarea'),key='w'+card.dataset.n;
+      ta.value=S.notes[key]||'';ta.oninput=()=>{S.notes[key]=ta.value;sv()};
+      card.querySelector('.rev').onclick=()=>card.querySelector('.m').classList.toggle('hide');
+      card.querySelectorAll('input[type=checkbox]').forEach(cb=>cb.onchange=()=>{
+        const n=card.querySelectorAll('input[type=checkbox]:checked').length;
+        card.querySelector('.res').textContent=n+' / '+e.check.length+' points covered';
+      });
+    }
+  });
+}
+
+function route(){
+  const [p,k]=location.hash.slice(1).split('/');
+  p==='quiz'?quiz(k):p==='code'?code():home();
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+route();
+</script>
+</body>
+</html>
