@@ -167,7 +167,7 @@ const CH=[
 ['contentType="text/html; charset=UTF-8" ensures:',['Faster rendering','Special characters (é, ü, ñ) display correctly','The JSP becomes a servlet','Security'],1,'UTF-8 encoding makes special characters display correctly.']
 ]}
 ,
-{id:'j1',t:'Midtest Sample 1: Part A (MCQ)',s:'The real paper, 10 questions with reasons',q:[
+{id:'j1',t:'June 2025: Part A (MCQ)',s:'The real paper, 10 questions with reasons',q:[
 ['When should a programmer use a Java interface instead of class inheritance?',['When sharing common code (data members and methods) among related classes','When sharing only common behaviour (method headers) among instances of different classes','When an entity is a strict, specialised form of another entity (an is-a relationship)','When implementing container-managed persistence'],1,'An interface lists method headers that unrelated classes can all promise to provide (for example Taxable on Toy and Book). Sharing code and is-a relationships are what inheritance is for.'],
 ['Which architecture pattern separates computational code from HTML presentation in Java EE web applications?',['Model-View-Controller (MVC)','Client-Server Architecture','Object-Relational Mapping (ORM)','Abstract Factory Pattern'],0,'MVC separates request processing (controller), business logic (model) and presentation (view, the JSP). Client-server describes who talks to whom; ORM maps objects to database tables.'],
 ['In MVC applied to JSP, which component typically acts as the Controller?',['The web browser','The JavaBeans object','The servlet','The JSP page'],2,'The servlet receives the request, processes it and forwards to the JSP. The JSP is the View and the JavaBean is the Model.'],
@@ -315,7 +315,7 @@ function home(){
   <div class="grid">${CH.filter(c=>N[c.id]).map(c=>`<div class="card"><h3><a href="#ch/${c.id}">${esc(c.t)}</a></h3><p class="mute">${esc(c.s)}</p>
   <p><a class="skip" href="#quiz/${c.id}">Skip notes, go to questions</a></p><p class="mute">${c.q.length} questions · ${S.best[c.id]!=null?'best '+S.best[c.id]+'%':'not tried'}</p></div>`).join('')}
   ${CH.filter(c=>!N[c.id]&&!/^(p1|j1|m2|m3)$/.test(c.id)).map(c=>`<div class="card"><h3><a href="#quiz/${c.id}">${esc(c.t)}</a></h3><p class="mute">${esc(c.s)}</p><p class="mute">${c.q.length} questions · ${S.best[c.id]!=null?'best '+S.best[c.id]+'%':'not tried'}</p></div>`).join('')}
-  <div class="card"><h3><a href="#past">Past-year papers</a></h3><p class="mute">Folder: Midtest Samples 1 to 3 and the October 2025 paper, MCQ and written parts</p></div>
+  <div class="card"><h3><a href="#past">Past-year papers</a></h3><p class="mute">Folder: June 2025, Midtest Samples 2 and 3, and October 2025, MCQ and written parts</p></div>
   <div class="card"><h3><a href="#part2">Part II practice</a></h3><p class="mute">Trace the output, write JSP, write doPost (exam style)</p></div>
   <div class="card"><h3><a href="#quiz/mix">Mix of all chapters</a></h3><p class="mute">${all().length} shuffled questions · ${S.best.mix!=null?'best '+S.best.mix+'%':'not tried'}</p></div>
   <div class="card"><h3><a href="#quiz/wrong">Retry my mistakes</a></h3><p class="mute">${nw} waiting</p></div>
@@ -327,7 +327,7 @@ function past(){
   const row=(h,t,d)=>`<div class="paper"><div><a href="${h}">${t}</a><div class="mute">${d}</div></div></div>`;
   $.innerHTML=`<p><a href="#">Back to chapters</a></p><h1>Past-year papers</h1>
   <p class="mute">Real papers in folders. Open a folder, then pick the part.</p>
-  <details class="card" open><summary>Midtest Sample 1 (1 hour)</summary>
+  <details class="card" open><summary>June 2025 (1 hour)</summary>
     ${row('#quiz/j1','Part A: 10 multiple choice',b('j1')+'. The paper has no answer key, so answers are worked out from your notes.')}
     ${row('#mid1','Part B: 2 written questions (30 marks)','Abstract class and array, then hotel booking: method, servlet and JSP.')}
   </details>
@@ -417,7 +417,7 @@ function code(list=CODE,title='Coding practice',back='#'){
 
 function route(){
   const [p,k]=location.hash.slice(1).split('/');
-  p==='ch'?notes(k):p==='quiz'?quiz(k):p==='code'?code():p==='part2'?code(PART2,'Part II practice (Oct 2025 style)'):p==='past'?past():p==='mid1'||p==='june'?code(JUNE,'Midtest Sample 1: Part B','#past'):p==='mid2'?code(MID2,'Midtest Sample 2: Part II','#past'):p==='mid3'?code(MID3,'Midtest Sample 3: Part II and III','#past'):p==='oct'?code(OCT,'October 2025: Part II','#past'):home();
+  p==='ch'?notes(k):p==='quiz'?quiz(k):p==='code'?code():p==='part2'?code(PART2,'Part II practice (Oct 2025 style)'):p==='past'?past():p==='mid1'||p==='june'?code(JUNE,'June 2025: Part B','#past'):p==='mid2'?code(MID2,'Midtest Sample 2: Part II','#past'):p==='mid3'?code(MID3,'Midtest Sample 3: Part II and III','#past'):p==='oct'?code(OCT,'October 2025: Part II','#past'):home();
   window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',route);
